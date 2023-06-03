@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<body>
+
+<h2>Upload File and Enter Text</h2>
+
+<form id="uploadForm" enctype="multipart/form-data">
+  <input id="text" type="text" placeholder="Enter some text">
+  <input id="file" type="file">
+  <button type="submit">Submit</button>
+</form>
+
+<p id="result"></p>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+<script>
+$(document).ready(function(){
+  $("#uploadForm").on('submit', function(e){
+    e.preventDefault();
+    var formData = new FormData(this);
+    formData.append('text', $('#text').val());
+
+    $.ajax({
+      url: "/submit",
+      type: "post",
+      data: formData,
+      contentType: false,
+      cache: false,
+      processData: false,
+      success: function(response) {
+        $("#result").html("Form submitted successfully");
+      },
+      error: function(xhr) {
+        // Do something to handle the error
+      }
+    });
+  });
+});
+</script>
+
+</body>
+</html>
