@@ -2,15 +2,25 @@
 <html>
 <body>
 
-<h2>Upload File and Enter Text</h2>
+<h2>Sequence Logo Visualization</h2>
+<p>Please Note that input is a list of same length sequence separated by new line.
+   The maximum sequence length is 16, the maximum number of sequences is 16.</p>
+<p>If input invalid format, output is empty.</p>
+<p>File input priority is higher than text input.</p>
 
 <form id="uploadForm" enctype="multipart/form-data">
-  <input id="text" type="text" placeholder="Enter some text">
+  <input id="text" type="text" placeholder="Enter some text" style="height: 100px;">
   <input id="file" type="file">
   <button type="submit">Submit</button>
 </form>
 
 <p id="result"></p>
+
+<!-- Add an image tag -->
+<img id="outputImage" src="" alt="Output image" style="max-width: 800px; max-height: 600px;">
+<p></p>
+<!-- Download an image -->
+<a id="downloadBtn" href="" download>Download Image</a>
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 
@@ -20,18 +30,41 @@ $(document).ready(function(){
     e.preventDefault();
     var formData = new FormData(this);
     formData.append('text', $('#text').val());
+    formData.append('file', $('#file')[0].files[0]);
 
     $.ajax({
       url: "/submit",
       type: "post",
       data: formData,
+      // dataType: 'json',  // Tell jQuery to expect JSON
       contentType: false,
       cache: false,
       processData: false,
       success: function(response) {
-        $("#result").html("Form submitted successfully");
+        console.log(response);
+        // $("#result").html("Form submitted successfully");
+        // $('#outputImage').attr('src', '/static/' + response);
+
+        // $('#outputImage').attr('src', response);
+        // $('#downloadBtn').attr('href', response);
+        if (response.error) {
+            // alert('??????????');
+            $('#message').text(response.error);
+            // Clear the image and download link
+            $('#outputImage').attr('src', '');
+            $('#downloadBtn').attr('href', '');
+        } else {
+            // alert('!!!!!!!!!');
+            console.log(response);
+            // Assume the response is the filename of the generated image.
+            // var imageUrl = '/static/' + response;
+            $('#outputImage').attr('src', response);
+            // Update the href attribute of the download button
+            $('#downloadBtn').attr('href', response);
+        }
       },
       error: function(xhr) {
+        // alert('Input text cannot be empty.');
         // Do something to handle the error
       }
     });
